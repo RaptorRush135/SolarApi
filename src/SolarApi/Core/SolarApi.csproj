@@ -1,0 +1,28 @@
+﻿<Project Sdk="RaptorRush135.PvZR.Sdk">
+
+  <PropertyGroup>
+    <IsModBuild>true</IsModBuild>
+    <ModMelonType>$(RootNamespace).Core</ModMelonType>
+    <ModColor>255, 255, 225, 0</ModColor>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerDefaultPreReleaseIdentifiers>dev</MinVerDefaultPreReleaseIdentifiers>
+  </PropertyGroup>
+
+  <Target Name="DisableZipVersionDotReplacementForPreRelease" AfterTargets="MinVer" Condition="'$(MinVerPreRelease)' != ''">
+    <PropertyGroup>
+      <ModZipReplaceVersionDots>false</ModZipReplaceVersionDots>
+    </PropertyGroup>
+  </Target>
+
+  <ItemGroup>
+    <Reference Include="$(PvzReDir)\MelonLoader\net6\System.Diagnostics.DiagnosticSource.dll" />
+    <Reference Include="$(PvzReDir)\MelonLoader\net6\Microsoft.Extensions.Logging.dll" />
+    <Reference Include="$(PvzReDir)\MelonLoader\net6\Microsoft.Extensions.Logging.Abstractions.dll" />
+    <Reference Include="$(PvzReDir)\MelonLoader\net6\Microsoft.Extensions.DependencyInjection.dll" />
+    <Reference Include="$(PvzReDir)\MelonLoader\net6\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+  </ItemGroup>
+
+</Project>
