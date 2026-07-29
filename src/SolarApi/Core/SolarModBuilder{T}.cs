@@ -13,6 +13,8 @@ public class SolarModBuilder<T>
 {
     public string ModName { get; } = typeof(T).Name;
 
+    public virtual string? ShortName => null;
+
     public T Build(
         MelonMod melon,
         IGameServiceContainer gameServiceContainer)
@@ -43,8 +45,22 @@ public class SolarModBuilder<T>
         ILoggingBuilder builder,
         MelonMod melon)
     {
+        Dictionary<string, string> aliases = [];
+
+        this.ConfigureLoggingAliases(builder, aliases);
+
         builder.AddProvider(
-            new MelonLoggerProvider(melon.ConsoleColor));
+            new MelonLoggerProvider(melon.ConsoleColor, aliases));
+    }
+
+    protected virtual void ConfigureLoggingAliases(
+        ILoggingBuilder builder,
+        Dictionary<string, string> aliases)
+    {
+        if (this.ShortName != null)
+        {
+            aliases.Add(typeof(T).Assembly.GetName().Name!, this.ShortName);
+        }
     }
 
     protected virtual void ConfigureServices(
