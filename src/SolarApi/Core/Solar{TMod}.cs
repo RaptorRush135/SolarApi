@@ -2,6 +2,9 @@
 
 using global::MelonLoader;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
 using SolarApi.Api.DependencyInjection;
 using SolarApi.DependencyInjection;
 
@@ -20,6 +23,9 @@ public static class Solar<TMod>
     }
 
     public static IServiceProvider Provider => Instance.Provider;
+
+    public static ILogger<TCategoryName> GetLogger<TCategoryName>()
+        => Provider.GetRequiredService<ILogger<TCategoryName>>();
 
     public static void RegisterMod<TBuilder>(MelonMod melon)
         where TBuilder : SolarModBuilder<TMod>, new()
