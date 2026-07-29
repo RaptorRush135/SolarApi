@@ -29,9 +29,6 @@ public sealed class OneTimeEvent<T>
     [MemberNotNullWhen(true, nameof(Value))]
     public bool Invoked { get; private set; }
 
-    public static OneTimeEvent<T> Create(string name, Type type)
-        => new(name, SolarLogger.Factory.CreateLogger(type));
-
     public void Subscribe(Action<T> action)
     {
         if (this.Disposed)
@@ -69,4 +66,7 @@ public sealed class OneTimeEvent<T>
         this.Invoked = true;
         this.@event.Invoke(value);
     }
+
+    internal static OneTimeEvent<T> Create(string name, Type type)
+        => new(name, SolarLogger.Factory.CreateLogger(type));
 }
