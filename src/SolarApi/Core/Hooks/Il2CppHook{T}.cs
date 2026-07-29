@@ -24,6 +24,8 @@ public sealed class Il2CppHook<T> : IFunctionHook
 
     public bool IsHooked => this.nativeHook.IsHooked;
 
+    public bool Disposed { get; private set; }
+
     public T Trampoline => this.nativeHook.Trampoline;
 
     public static Il2CppHook<T> Create(MethodInfo method, T detour)
@@ -37,15 +39,35 @@ public sealed class Il2CppHook<T> : IFunctionHook
         return new Il2CppHook<T>(targetPtr, detourPtr, detour);
     }
 
-    public void Attach() => this.nativeHook.Attach();
+    public void Attach()
+    {
+        this.ThrowIfDisposed();
+
+        this.nativeHook.Attach();
+    }
 
     public void Detach()
     {
         this.nativeHook.Detach();
+    }
 
-        if (this.detourHandle.IsAllocated)
+    public void Dispose()
+    {
+        if (this.Disposed)
         {
-            this.detourHandle.Free();
+            return;
+        }
+
+        this.Disposed = true;
+        this.Detach();
+        this.detourHandle.Free();
+    }
+
+    private void ThrowIfDisposed()
+    {
+        if (this.Disposed)
+        {
+            throw new ObjectDisposedException(nameof(Il2CppHook<>));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SolarApi.Hooks;
 
-public interface IFunctionHook
+public interface IFunctionHook : IDisposable
 {
     bool IsHooked { get; }
 
