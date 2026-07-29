@@ -1,8 +1,8 @@
 ﻿namespace SolarApi.Unity.Resources;
 
-using Il2CppInterop.Runtime.Injection;
+using global::MelonLoader;
 
-using MelonLoader;
+using Il2CppInterop.Runtime.Injection;
 
 using UnityEngine;
 using UnityEngine.ResourceManagement.ResourceLocations;

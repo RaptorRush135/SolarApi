@@ -2,7 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-using MelonLoader;
+using global::MelonLoader;
 
 public sealed class OneTimeEvent<T>
 {

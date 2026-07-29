@@ -1,6 +1,6 @@
 ﻿namespace SolarApi.Unity;
 
-using MelonLoader;
+using global::MelonLoader;
 
 using UnityEngine;
 

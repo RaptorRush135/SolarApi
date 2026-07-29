@@ -1,6 +1,6 @@
 ﻿namespace SolarApi.Logging;
 
-using MelonLoader;
+using global::MelonLoader;
 
 using Microsoft.Extensions.Logging;
 

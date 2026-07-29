@@ -1,6 +1,6 @@
 ﻿namespace SolarApi;
 
-using MelonLoader;
+using global::MelonLoader;
 
 using SolarApi.Api.DependencyInjection;
 using SolarApi.DependencyInjection;

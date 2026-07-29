@@ -1,6 +1,6 @@
 ﻿namespace SolarApi.Events;
 
-using MelonLoader;
+using global::MelonLoader;
 
 public sealed class OneTimeEvent
 {

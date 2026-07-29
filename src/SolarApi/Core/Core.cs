@@ -1,5 +1,5 @@
 ﻿namespace SolarApi;
 
-using MelonLoader;
+using global::MelonLoader;
 
 internal sealed class Core : MelonMod;
