@@ -30,7 +30,7 @@ internal sealed class GameServiceContainer : IGameServiceContainer
                 {
                     var interopType = kvp.Key.GetInteropType();
                     var instance = kvp.Value.Instance.Cast(interopType);
-                    return new KeyValuePair<Type, Il2CppObjectBase>(interopType, instance);
+                    return KeyValuePair.Create(interopType, instance);
                 })
                 .ToDictionary();
 

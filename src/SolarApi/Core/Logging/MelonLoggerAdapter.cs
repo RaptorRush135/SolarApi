@@ -5,7 +5,8 @@ using MelonLoader;
 using Microsoft.Extensions.Logging;
 
 public sealed class MelonLoggerAdapter(
-    MelonLogger.Instance logger) : ILogger
+    MelonLogger.Instance logger)
+    : ILogger
 {
     public IDisposable? BeginScope<TState>(TState state)
         where TState : notnull

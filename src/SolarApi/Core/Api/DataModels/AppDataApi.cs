@@ -9,7 +9,7 @@ using Il2CppReloaded.DataModels;
 using SolarApi.Events;
 
 [HarmonyPatch]
-public static class AppDataApi
+internal static class AppDataApi
 {
     public static readonly OneTimeEvent<AppDataModels> Bound = new();
 

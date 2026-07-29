@@ -1,24 +1,59 @@
 ﻿namespace SolarApi;
 
+using MelonLoader;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 public abstract class SolarMod
 {
+    public IServiceProvider Provider { get; private set; } = null!;
+
     public ILogger Logger { get; private set; } = null!;
 
-    public void Deinitialize(Exception? exception)
-        => this.OnDeinitialize(exception);
+    private MelonMod Melon { get; set; } = null!;
 
-    internal void PreInitialize(ILogger logger)
-        => this.Logger = logger;
+    public void Deinitialize()
+        => this.OnDeinitialize();
+
+    internal void PreInitialize<TMod>(MelonMod melon, IServiceProvider provider)
+        where TMod : SolarMod
+    {
+        this.Melon = melon;
+        this.Provider = provider;
+        this.Logger = provider.GetRequiredService<ILogger<TMod>>();
+    }
 
     internal void Initialize()
-        => this.OnInitialize();
+    {
+        this.HarmonyInit();
+        this.OnInitialize();
+    }
+
+    internal virtual void OnInitializationFailure(Exception exception)
+    {
+        this.Logger.LogError(exception, "Failed to initialize");
+        this.Deinitialize();
+    }
 
     protected abstract void OnInitialize();
 
-    protected virtual void OnDeinitialize(Exception? exception)
+    protected virtual void OnDeinitialize()
     {
-        this.Logger.LogError(exception, "Failed to initialize");
+    }
+
+    private void HarmonyInit()
+    {
+        foreach (var type in this.Melon.MelonAssembly.Assembly.GetValidTypes())
+        {
+            try
+            {
+                this.Melon.HarmonyInstance.CreateClassProcessor(type, false).Patch();
+            }
+            catch (Exception ex)
+            {
+                this.Logger.LogError(ex, "Failed to HarmonyInit PatchAll: {TypeName}", type.FullName);
+            }
+        }
     }
 }

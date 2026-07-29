@@ -1,5 +1,7 @@
 ﻿namespace SolarApi.Api.DependencyInjection;
 
+using System.Diagnostics.CodeAnalysis;
+
 using Il2CppReloaded;
 
 using SolarApi.Api.DataModels;
@@ -14,23 +16,20 @@ internal static class GameServiceContainerApi
 
     private static AppDataModels? appDataModels;
 
-    private static bool fired;
-
+    [SuppressMessage(
+        "Minor Code Smell",
+        "S3963:\"static\" fields should be initialized inline",
+        Justification = "False positive (https://github.com/SonarSource/sonar-dotnet/issues/9656).")]
     static GameServiceContainerApi()
     {
-        BootDataApi.Bound.Subscribe(value => OnResolve(ref bootDataModels, value));
-        AppDataApi.Bound.Subscribe(value => OnResolve(ref appDataModels, value));
-    }
-
-    private static void OnResolve<T>(ref T field, T value)
-    {
-        field = value;
-        TryFire();
+        BootDataApi.Bound.Subscribe(value => bootDataModels = value);
+        AppDataApi.Bound.Subscribe(value => appDataModels = value);
+        FrontendApi.OnFirstActivation.Subscribe(TryFire);
     }
 
     private static void TryFire()
     {
-        if (fired)
+        if (Ready.Invoked)
         {
             throw new InvalidOperationException(
                 "Required models were already resolved.");
@@ -38,10 +37,9 @@ internal static class GameServiceContainerApi
 
         if (bootDataModels is null || appDataModels is null)
         {
-            return;
+            throw new InvalidOperationException(
+                "Missing required models.");
         }
-
-        fired = true;
 
         var container = new GameServiceContainer(
             AppCore.s_appContainer,

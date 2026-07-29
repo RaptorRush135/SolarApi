@@ -1,0 +1,87 @@
+﻿namespace SolarApi;
+
+using MelonLoader;
+
+using SolarApi.Api.DependencyInjection;
+using SolarApi.DependencyInjection;
+
+public static class Solar<TMod>
+    where TMod : SolarMod
+{
+    public static TMod Instance
+    {
+        get
+        {
+            return field
+                ?? throw new InvalidOperationException(
+                    $"No registered mod of type {typeof(TMod).FullName} was found.");
+        }
+        private set;
+    }
+
+    public static IServiceProvider Provider => Instance.Provider;
+
+    public static void RegisterMod<TBuilder>(MelonMod melon)
+        where TBuilder : SolarModBuilder<TMod>, new()
+    {
+        RegisterMod(melon, new TBuilder());
+    }
+
+    public static void RegisterMod(MelonMod melon, SolarModBuilder<TMod> builder)
+    {
+        if (!melon.MelonAssembly.HarmonyDontPatchAll)
+        {
+            throw new InvalidOperationException(
+                "HarmonyDontPatchAll must be true." +
+                " Solar applies Harmony patches after the game's services become available.");
+        }
+
+        Melon<Core>.Logger.Msg($"Registered solar mod: '{builder.ModName}'");
+
+        GameServiceContainerApi.Ready.Subscribe(
+            container => Build(melon, builder, container));
+    }
+
+    private static void Build(
+        MelonMod melon,
+        SolarModBuilder<TMod> builder,
+        IGameServiceContainer container)
+    {
+        Melon<Core>.Logger.Msg($"Building solar mod: '{builder.ModName}'");
+
+        if (!melon.Registered)
+        {
+            Melon<Core>.Logger.Warning(
+                $"Cannot build mod because {melon.MelonTypeName}" +
+                " is either not registered or has already been unloaded.");
+
+            return;
+        }
+
+        TMod mod = builder.Build(melon, container);
+
+        Instance = mod;
+
+        try
+        {
+            mod.Initialize();
+        }
+        catch (Exception ex)
+        {
+            try
+            {
+                mod.OnInitializationFailure(ex);
+            }
+            finally
+            {
+                melon.Unregister();
+            }
+
+            return;
+        }
+
+        melon.OnUnregister.Subscribe(
+            () => mod.Deinitialize(),
+            unsubscribeOnFirstInvocation: true);
+    }
+}

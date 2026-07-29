@@ -18,11 +18,11 @@
   </Target>
 
   <ItemGroup>
-    <Reference Include="$(PvzReDir)\MelonLoader\net6\System.Diagnostics.DiagnosticSource.dll" />
-    <Reference Include="$(PvzReDir)\MelonLoader\net6\Microsoft.Extensions.Logging.dll" />
-    <Reference Include="$(PvzReDir)\MelonLoader\net6\Microsoft.Extensions.Logging.Abstractions.dll" />
-    <Reference Include="$(PvzReDir)\MelonLoader\net6\Microsoft.Extensions.DependencyInjection.dll" />
-    <Reference Include="$(PvzReDir)\MelonLoader\net6\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+    <ModEnvironmentReference Include="System.Diagnostics.DiagnosticSource.dll" />
+    <ModEnvironmentReference Include="Microsoft.Extensions.Logging.dll" />
+    <ModEnvironmentReference Include="Microsoft.Extensions.Logging.Abstractions.dll" />
+    <ModEnvironmentReference Include="Microsoft.Extensions.DependencyInjection.dll" />
+    <ModEnvironmentReference Include="Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
   </ItemGroup>
 
 </Project>
