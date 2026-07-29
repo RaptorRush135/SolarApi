@@ -51,9 +51,16 @@ public sealed class AddressableAssetRegistry
         ArgumentNullException.ThrowIfNull(key);
         ArgumentNullException.ThrowIfNull(sprite);
 
+        return this.AddSprite(this.KeyToGuid(key), sprite);
+    }
+
+    public AssetReferenceSprite AddSprite(Guid key, Sprite sprite)
+    {
+        ArgumentNullException.ThrowIfNull(sprite);
+
         sprite.hideFlags |= HideFlags.HideAndDontSave;
 
-        var location = this.spriteProvider.AddAsset(this.KeyToGuid(key), sprite, out string assetKey);
+        var location = this.spriteProvider.AddAsset(key, sprite, out string assetKey);
 
         this.locator.Add(assetKey, location);
 
