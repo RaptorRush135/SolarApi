@@ -11,6 +11,8 @@ internal sealed class InMemoryResourceProvider<T>
 {
     private readonly Dictionary<string, T> assetMap = [];
 
+    private readonly Il2CppSystem.Type defaultType = Il2CppType.Of<T>();
+
     public string ProviderId => field ??= this.GetType().FullName!;
 
     public IResourceLocation AddAsset(Guid id, T asset, out string key)
@@ -27,8 +29,7 @@ internal sealed class InMemoryResourceProvider<T>
             && this.assetMap.ContainsKey(location.InternalId);
     }
 
-    public Il2CppSystem.Type GetDefaultType()
-        => Il2CppType.Of<T>();
+    public Il2CppSystem.Type GetDefaultType() => this.defaultType;
 
     public void Provide(ProvideHandle provideHandle)
     {
