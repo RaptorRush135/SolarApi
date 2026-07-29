@@ -4,24 +4,23 @@ using System.Diagnostics.CodeAnalysis;
 
 using global::MelonLoader;
 
+using Microsoft.Extensions.Logging;
+
 public sealed class OneTimeEvent<T>
 {
     private readonly MelonEvent<T> @event = new();
 
-    // TODO
-    private readonly MelonLogger.Instance logger;
+    private readonly ILogger logger;
 
-    public OneTimeEvent()
-        : this(Melon<Core>.Logger)
-    {
-    }
-
-    public OneTimeEvent(MelonLogger.Instance logger)
+    public OneTimeEvent(string name, ILogger logger)
     {
         ArgumentNullException.ThrowIfNull(logger);
 
+        this.Name = name;
         this.logger = logger;
     }
+
+    public string Name { get; }
 
     public T? Value { get; private set; }
 
@@ -29,6 +28,9 @@ public sealed class OneTimeEvent<T>
 
     [MemberNotNullWhen(true, nameof(Value))]
     public bool Invoked { get; private set; }
+
+    public static OneTimeEvent<T> Create(string name, Type type)
+        => new(name, SolarLogger.Factory.CreateLogger(type));
 
     public void Subscribe(Action<T> action)
     {
@@ -50,7 +52,11 @@ public sealed class OneTimeEvent<T>
     {
         if (this.Invoked)
         {
-            this.logger.Warning($"One-time event was already invoked ({typeof(T).Name})");
+            this.logger.LogWarning(
+                "One-time event '{EventName}' was already invoked ({TypeName})",
+                this.Name,
+                typeof(T).Name);
+
             return;
         }
 

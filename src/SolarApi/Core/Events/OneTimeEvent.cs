@@ -2,28 +2,31 @@
 
 using global::MelonLoader;
 
+using Microsoft.Extensions.Logging;
+
 public sealed class OneTimeEvent
 {
     private readonly MelonEvent @event = new();
 
-    // TODO
-    private readonly MelonLogger.Instance logger;
+    private readonly ILogger logger;
 
-    public OneTimeEvent()
-        : this(Melon<Core>.Logger)
+    public OneTimeEvent(string name, ILogger logger)
     {
-    }
-
-    public OneTimeEvent(MelonLogger.Instance logger)
-    {
+        ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(logger);
 
+        this.Name = name;
         this.logger = logger;
     }
+
+    public string Name { get; }
 
     public bool Disposed => this.@event.Disposed;
 
     public bool Invoked { get; private set; }
+
+    public static OneTimeEvent Create(string name, Type type)
+        => new(name, SolarLogger.Factory.CreateLogger(type));
 
     public void Subscribe(Action action)
     {
@@ -45,7 +48,10 @@ public sealed class OneTimeEvent
     {
         if (this.Invoked)
         {
-            this.logger.Warning("One-time event was already invoked");
+            this.logger.LogWarning(
+                "One-time event '{EventName}' was already invoked",
+                this.Name);
+
             return;
         }
 

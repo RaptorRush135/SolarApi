@@ -11,7 +11,8 @@ using SolarApi.Events;
 [HarmonyPatch]
 internal static class BootDataApi
 {
-    public static readonly OneTimeEvent<BootDataModels> Bound = new();
+    public static readonly OneTimeEvent<BootDataModels> Bound
+        = OneTimeEvent<BootDataModels>.Create(nameof(Bound), typeof(BootDataApi));
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(BootDataProvider), nameof(BootDataProvider.OnBind))]

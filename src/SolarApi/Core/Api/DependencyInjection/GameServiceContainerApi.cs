@@ -10,7 +10,8 @@ using SolarApi.Events;
 
 internal static class GameServiceContainerApi
 {
-    public static readonly OneTimeEvent<GameServiceContainer> Ready = new();
+    public static readonly OneTimeEvent<GameServiceContainer> Ready
+        = OneTimeEvent<GameServiceContainer>.Create(nameof(Ready), typeof(GameServiceContainerApi));
 
     private static BootDataModels? bootDataModels;
 

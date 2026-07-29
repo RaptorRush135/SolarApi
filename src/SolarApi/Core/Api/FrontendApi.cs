@@ -9,7 +9,8 @@ using SolarApi.Events;
 [HarmonyPatch]
 internal static class FrontendApi
 {
-    public static readonly OneTimeEvent OnFirstActivation = new();
+    public static readonly OneTimeEvent OnFirstActivation
+        = OneTimeEvent.Create(nameof(OnFirstActivation), typeof(FrontendApi));
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(FrontendActivity), nameof(FrontendActivity.ActiveStarted))]
