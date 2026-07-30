@@ -7,6 +7,7 @@ using Il2CppInterop.Runtime.InteropTypes;
 using Il2CppTekly.DataModels.Models;
 using Il2CppTekly.Injectors;
 using Il2CppTekly.Localizations;
+using Il2CppTekly.TreeState;
 
 using SolarApi.Collections.Extensions;
 using SolarApi.Il2Cpp.Extensions;
@@ -14,13 +15,18 @@ using SolarApi.Il2Cpp.Extensions;
 [HarmonyPatch]
 internal sealed class GameServiceContainer : IGameServiceContainer
 {
-    public GameServiceContainer(InjectorContainer container, IEnumerable<ModelBase> models)
+    public GameServiceContainer(
+        InjectorContainer container,
+        IEnumerable<ModelBase> models,
+        IEnumerable<TreeActivity> activities)
     {
         ArgumentNullException.ThrowIfNull(container);
         ArgumentNullException.ThrowIfNull(models);
+        ArgumentNullException.ThrowIfNull(activities);
 
         this.Services = CreateServiceMap();
         this.Models = models.ToDictionary(m => m.GetType());
+        this.Activities = activities.ToDictionary(m => m.GetType());
 
         IReadOnlyDictionary<Type, Il2CppObjectBase> CreateServiceMap()
         {
@@ -43,6 +49,8 @@ internal sealed class GameServiceContainer : IGameServiceContainer
     public IReadOnlyDictionary<Type, Il2CppObjectBase> Services { get; }
 
     public IReadOnlyDictionary<Type, ModelBase> Models { get; }
+
+    public IReadOnlyDictionary<Type, TreeActivity> Activities { get; }
 
     private static ILocalizer GetLocalizer()
     {

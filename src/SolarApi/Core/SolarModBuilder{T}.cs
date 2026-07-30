@@ -99,6 +99,11 @@ public class SolarModBuilder<T>
         {
             services.AddSingleton(type, model);
         }
+
+        foreach (var (type, activity) in container.Activities)
+        {
+            services.AddSingleton(type, activity);
+        }
     }
 
     protected virtual void ConfigureModServices(
