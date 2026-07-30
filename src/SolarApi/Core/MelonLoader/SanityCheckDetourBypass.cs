@@ -8,10 +8,15 @@ using global::MelonLoader;
 
 using HarmonyLib;
 
+using Microsoft.Extensions.Logging;
+
 using SolarApi;
 
 public sealed class SanityCheckDetourBypass : IDisposable
 {
+    private static readonly ILogger<SanityCheckDetourBypass> Logger
+        = SolarLogger.Factory.CreateLogger<SanityCheckDetourBypass>();
+
     private static readonly MethodInfo? Target = AccessTools.Method(
        "MelonLoader.CoreClrUtils.CoreClrDelegateFixer:SanityCheckDetour");
 
@@ -29,7 +34,7 @@ public sealed class SanityCheckDetourBypass : IDisposable
 
         if (Target == null)
         {
-            Melon<Core>.Logger.Warning("Failed to locate SanityCheckDetour");
+            Logger.LogWarning("Failed to locate SanityCheckDetour");
             return;
         }
 

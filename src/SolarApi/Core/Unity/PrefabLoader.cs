@@ -1,16 +1,20 @@
 ﻿namespace SolarApi.Unity;
 
-using global::MelonLoader;
+using Microsoft.Extensions.Logging;
 
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 /// <summary>
 /// Provides helpers for loading prefab assets from Addressables.
 /// </summary>
 public static class PrefabLoader
 {
+    private static readonly ILogger Logger = SolarLogger.Factory.CreateLogger(typeof(PrefabLoader));
+
     /// <summary>
     /// Loads the prefab asset referenced by an <see cref="AssetReferenceGameObject"/>.
     /// <para>
@@ -57,7 +61,7 @@ public static class PrefabLoader
 
         if (expectLoaded && !isLoaded)
         {
-            Melon<Core>.Logger.Warning($"Expected prefab '{result.name}' to be loaded");
+            Logger.LogWarning("Expected prefab '{ResultName}' to be loaded", result.name);
         }
 
         return result;

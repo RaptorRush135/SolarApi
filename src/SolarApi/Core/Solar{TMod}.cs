@@ -11,6 +11,8 @@ using SolarApi.DependencyInjection;
 public static class Solar<TMod>
     where TMod : SolarMod
 {
+    private static readonly ILogger Logger = SolarLogger.Factory.CreateLogger(typeof(Solar<TMod>));
+
     public static TMod Instance
     {
         get
@@ -42,7 +44,7 @@ public static class Solar<TMod>
                 " Solar applies Harmony patches after the game's services become available.");
         }
 
-        Melon<Core>.Logger.Msg($"Registered solar mod: '{builder.ModName}'");
+        Logger.LogInformation("Registered solar mod: '{ModName}'", builder.ModName);
 
         GameServiceContainerApi.Ready.Subscribe(
             container => Build(melon, builder, container));
@@ -53,13 +55,14 @@ public static class Solar<TMod>
         SolarModBuilder<TMod> builder,
         IGameServiceContainer container)
     {
-        Melon<Core>.Logger.Msg($"Building solar mod: '{builder.ModName}'");
+        Logger.LogInformation("Building solar mod: '{ModName}'", builder.ModName);
 
         if (!melon.Registered)
         {
-            Melon<Core>.Logger.Warning(
-                $"Cannot build mod because {melon.MelonTypeName}" +
-                " is either not registered or has already been unloaded.");
+            Logger.LogWarning(
+                "Cannot build mod because {MelonTypeName}" +
+                " is either not registered or has already been unloaded.",
+                melon.MelonTypeName);
 
             return;
         }
