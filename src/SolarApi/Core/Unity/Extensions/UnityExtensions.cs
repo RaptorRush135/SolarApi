@@ -32,6 +32,26 @@ public static class UnityExtensions
     }
 
     /// <summary>
+    /// Finds a child <see cref="Transform"/> by name.
+    /// </summary>
+    /// <param name="transform">
+    /// The parent <see cref="Transform"/> to search.
+    /// </param>
+    /// <param name="name">
+    /// The name or relative path of the child transform to find.
+    /// </param>
+    /// <returns>
+    /// The matching child <see cref="Transform"/>.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if no matching child <see cref="Transform"/> exists.
+    /// </exception>
+    public static Transform FindOrThrow(this Transform transform, string name)
+        => transform.Find(name).Ref()
+        ?? throw new InvalidOperationException(
+            $"'{name}' was not found in the transform.");
+
+    /// <summary>
     /// Returns <see langword="null"/> for Unity objects that have been destroyed,
     /// allowing standard C# null operators to be used.
     /// </summary>
