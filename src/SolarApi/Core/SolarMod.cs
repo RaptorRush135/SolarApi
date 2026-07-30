@@ -11,6 +11,8 @@ public abstract class SolarMod
 
     public ILogger Logger { get; private set; } = null!;
 
+    public bool Disposed { get; private set; }
+
     private MelonMod Melon { get; set; } = null!;
 
     public void Deinitialize()
@@ -40,6 +42,19 @@ public abstract class SolarMod
 
     protected virtual void OnDeinitialize()
     {
+        if (this.Disposed)
+        {
+            return;
+        }
+
+        this.Disposed = true;
+
+        this.Melon.Unregister();
+
+        if (this.Provider is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
     }
 
     private void HarmonyInit()
