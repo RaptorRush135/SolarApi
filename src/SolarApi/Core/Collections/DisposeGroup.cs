@@ -24,5 +24,7 @@ public sealed class DisposeGroup(
         {
             disposable.Dispose();
         }
+
+        this.disposables.Clear();
     }
 }
