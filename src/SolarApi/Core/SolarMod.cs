@@ -32,7 +32,7 @@ public abstract class SolarMod
         this.OnInitialize();
     }
 
-    internal virtual void OnInitializationFailure(Exception exception)
+    protected internal virtual void OnInitializationFailure(Exception exception)
     {
         this.Logger.LogError(exception, "Failed to initialize");
         this.Deinitialize();
