@@ -77,15 +77,7 @@ public static class Solar<TMod>
         }
         catch (Exception ex)
         {
-            try
-            {
-                mod.OnInitializationFailure(ex);
-            }
-            finally
-            {
-                melon.Unregister();
-            }
-
+            mod.OnInitializationFailure(ex);
             return;
         }
 
